@@ -31,12 +31,17 @@ public interface ResourcesReader {
 			log.info("Error(src is null.)");
 			throw new IOException("src is null.");
 		}
+		File srcFile = FileUtils.toFile(src);
+		log.debug("Src File:{}", srcFile);
 		Path destPath = Paths.get(dest);
 		log.debug("Dest Path:{}", destPath.toAbsolutePath());
-		//long size = Files.copy(src.openStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
-		
-		
-		 FileUtils.copyURLToFile(src, new File(dest));
+		if(srcFile.isFile()) {
+			log.debug("Src is File.");
+			FileUtils.copyFile(srcFile, destPath.toFile());
+		}else if(srcFile.isDirectory()) {
+			log.debug("Src is Directory.");
+			FileUtils.copyToDirectory(srcFile, destPath.toFile());
+		}
 		log.info("END");
 	}
 	
