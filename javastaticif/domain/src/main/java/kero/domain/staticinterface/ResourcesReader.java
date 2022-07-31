@@ -27,6 +27,10 @@ public interface ResourcesReader {
 	 */
 	public static void copy(URL src, String dest) throws IOException {
 		log.info("START(src: {}, dest: {})", src, dest);
+		if(src == null) {
+			log.info("Error(src is null.)");
+			throw new IOException("src is null.");
+		}
 		Path destPath = Paths.get(dest);
 		log.debug("Dest Path:{}", destPath.toAbsolutePath());
 		//long size = Files.copy(src.openStream(), destPath, StandardCopyOption.REPLACE_EXISTING);

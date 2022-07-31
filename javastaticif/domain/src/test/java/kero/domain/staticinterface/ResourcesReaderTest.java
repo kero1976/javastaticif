@@ -99,8 +99,12 @@ public class ResourcesReaderTest {
 	void copy_Nothing() throws IOException {
 		String str = "Nothing";
 		URL url = ResourcesReader.getURL(str);
-		ResourcesReader.copy(url, str);
-		assertThat(Files.exists(Paths.get(str))).isTrue();
+		
+	    assertThatThrownBy(() -> {
+	    	ResourcesReader.copy(url, str);
+	    }).isInstanceOfSatisfying(IOException.class, e -> {
+	        assertThat(e.getMessage()).isEqualTo("src is null.");
+	    });
 	}
 	
 	@DisplayName("test2のコピー")
