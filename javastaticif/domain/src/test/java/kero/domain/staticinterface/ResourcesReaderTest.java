@@ -1,71 +1,114 @@
 package kero.domain.staticinterface;
-import java.io.File;
+
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * リソースファイルの読込用インタフェース.
- * @author kero
- *
- */
-public interface ResourcesReaderTest {
-	
-	/** ロガー. */
-	static Logger log = LoggerFactory.getLogger(ResourcesReader.class);
-	
-	/**
-	 * リソースファイルをコピーする.(ファイルが存在する場合は上書きする)
-	 * @param src コピー元のリソースファイルのURL
-	 * @param dest コピー先
-	 * @throws IOException
-	 */
-	public static void copy(URL src, String dest) throws IOException {
-		log.info("START(src: {}, dest: {})", src, dest);
-		Path destPath = Paths.get(dest);
-		log.debug("Dest Path:{}", destPath.toAbsolutePath());
-		//long size = Files.copy(src.openStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
-		
-		
-		 //FileUtils.copyURLToFile(src, new File(dest));
-		log.info("END");
+public class ResourcesReaderTest {
+
+	@DisplayName("test1.txtの読込")
+	@Test
+	void getURL1() {
+		String str = "test1.txt";
+		var result = ResourcesReader.getURL(str);
+		assertThat(result).isNotNull();
 	}
 	
-	/**
-	 * リソースファイルのURLを取得する.
-	 * @param path リソースファイルのパス
-	 * @return リソースファイルのURL
-	 */
-	public static URL getURL(String path) {
-		log.info("START(path: {})", path);
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		var result =  classloader.getResource(path);
-		log.info("END({})",result);
-		
-		return result;
+	@DisplayName("test2/test2.txtの読込")
+	@Test
+	void getURL2() {
+		String str = "test2/test2.txt";
+		var result = ResourcesReader.getURL(str);
+		assertThat(result).isNotNull();
 	}
 	
-	/**
-	 * リソースファイルのFileを取得する.
-	 * @param path リソースファイルのパス
-	 * @return リソースファイルのFile
-	 */
-	public static File getFile(String path) {
-		log.info("START(path: {})", path);
-		URL url = getURL(path);
-		if(url == null) {
-			log.info("END(null)");
-			return null;
-		}
-		String file = url.getFile();
-		log.debug("File:{}", file);
-		var result = new File(file);
-		log.info("END({})",result);
-		
-		return result;
+	@DisplayName("存在しないファイルの読込")
+	@Test
+	void getURL_Nothing() {
+		String str = "Nothing";
+		var result = ResourcesReader.getURL(str);
+		assertThat(result).isNull();
+	}
+	
+	@DisplayName("test2の読込")
+	@Test
+	void getURL2_Dir() {
+		String str = "test2/";
+		var result = ResourcesReader.getURL(str);
+		assertThat(result).isNotNull();
+	}
+	
+	@DisplayName("test1.txtの読込")
+	@Test
+	void getFile1() {
+		String str = "test1.txt";
+		var result = ResourcesReader.getFile(str);
+		assertThat(result).isNotNull();
+	}
+	
+	@DisplayName("test2/test2.txtの読込")
+	@Test
+	void getFile2() {
+		String str = "test2/test2.txt";
+		var result = ResourcesReader.getFile(str);
+		assertThat(result).isNotNull();
+	}
+	
+	@DisplayName("存在しないファイルの読込")
+	@Test
+	void getFile_Nothing() {
+		String str = "Nothing";
+		var result = ResourcesReader.getFile(str);
+		assertThat(result).isNull();
+	}
+	
+	@DisplayName("test2の読込")
+	@Test
+	void getFile2_Dir() {
+		String str = "test2/";
+		var result = ResourcesReader.getFile(str);
+		assertThat(result).isNotNull();
+	}
+	
+	@DisplayName("test1.txtのコピー")
+	@Test
+	void copy1() throws IOException {
+		String str = "test1.txt";
+		URL url = ResourcesReader.getURL(str);
+		ResourcesReader.copy(url, str);
+		assertThat(Files.exists(Paths.get(str))).isTrue();
+	}
+	
+	@DisplayName("test2/test2.txtのコピー")
+	@Test
+	void copy2() throws IOException {
+		String str = "test2/test2.txt";
+		URL url = ResourcesReader.getURL(str);
+		ResourcesReader.copy(url, str);
+		assertThat(Files.exists(Paths.get(str))).isTrue();
+	}
+	
+	@DisplayName("存在しないファイルのコピー")
+	@Test
+	void copy_Nothing() throws IOException {
+		String str = "Nothing";
+		URL url = ResourcesReader.getURL(str);
+		ResourcesReader.copy(url, str);
+		assertThat(Files.exists(Paths.get(str))).isTrue();
+	}
+	
+	@DisplayName("test2のコピー")
+	@Test
+	void copy2_Dir() throws IOException {
+		String str = "test2/";
+		URL url = ResourcesReader.getURL(str);
+		ResourcesReader.copy(url, str);
+		assertThat(Files.exists(Paths.get(str))).isTrue();
 	}
 }
