@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public interface ResourcesReader {
 		//long size = Files.copy(src.openStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
 		
 		
-		 //FileUtils.copyURLToFile(src, new File(dest));
+		 FileUtils.copyURLToFile(src, new File(dest));
 		log.info("END");
 	}
 	
